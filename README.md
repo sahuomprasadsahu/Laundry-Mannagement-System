@@ -187,7 +187,7 @@ API Docs → http://127.0.0.1:8000/docs
 Username: admin
 Password: admin123
 
-##📁 Project Structure
+## 📁 Project Structure
 
 Laundry_System/
 │
@@ -196,7 +196,7 @@ Laundry_System/
 ├── templates/
 │ └── index.html
 ├── screenshots/
----
+
 
 📈 Future Improvements
 Secure password hashing
