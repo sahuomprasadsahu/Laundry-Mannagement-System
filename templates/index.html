@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laundry Admin Panel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 p-6">
+
+<div class="max-w-5xl mx-auto">
+
+    <!-- ================= LOGIN SECTION ================= -->
+    <div id="loginBox" class="bg-white p-6 rounded shadow max-w-md mx-auto">
+        <h2 class="text-2xl font-bold mb-4 text-center">Admin Login</h2>
+
+        <input id="username" placeholder="Username" class="border p-2 w-full mb-3">
+        <input id="password" type="password" placeholder="Password" class="border p-2 w-full mb-3">
+
+        <button onclick="login()" class="bg-blue-600 text-white w-full p-2 rounded">Login</button>
+    </div>
+
+    <!-- ================= MAIN APP ================= -->
+    <div id="app" class="hidden">
+
+        <h1 class="text-3xl font-bold mb-6 text-center text-blue-800">
+            Laundry Dashboard
+        </h1>
+
+        <!-- DASHBOARD -->
+        <div class="grid grid-cols-3 gap-4 mb-6">
+            <div class="bg-white p-4 rounded text-center shadow">
+                <p>Total Orders</p>
+                <h2 id="totalOrders">0</h2>
+            </div>
+            <div class="bg-white p-4 rounded text-center shadow">
+                <p>Total Revenue</p>
+                <h2 id="totalRevenue">₹0</h2>
+            </div>
+            <div class="bg-white p-4 rounded text-center shadow">
+                <p>Active Orders</p>
+                <h2 id="activeOrders">0</h2>
+            </div>
+        </div>
+
+        <!-- CREATE ORDER -->
+        <div class="bg-white p-4 rounded shadow mb-6">
+            <h2 class="text-xl mb-3">Create Order</h2>
+
+            <input id="custName" placeholder="Customer Name" class="border p-2 mb-2 w-full">
+            <input id="custPhone" placeholder="Phone Number" class="border p-2 mb-2 w-full">
+            <input id="garment" placeholder="Garment" class="border p-2 mb-2 w-full">
+
+            <div class="grid grid-cols-2 gap-2">
+                <input id="qty" type="number" placeholder="Qty" class="border p-2">
+                <input id="price" type="number" placeholder="Price" class="border p-2">
+            </div>
+
+            <button onclick="createOrder()" class="bg-green-600 text-white mt-3 p-2 w-full rounded">
+                Create Order
+            </button>
+        </div>
+
+        <!-- ORDERS TABLE -->
+        <div class="bg-white rounded shadow overflow-hidden">
+            <table class="w-full text-sm">
+                <thead class="bg-blue-100">
+                    <tr>
+                        <th>ID</th>
+                        <th>Customer</th>
+                        <th>Status</th>
+                        <th>Bill</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="ordersTable"></tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+<script>
+const API = "http://127.0.0.1:8000";
+let token = "";
+
+/* ================= LOGIN ================= */
+async function login() {
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+
+    const res = await fetch(`${API}/login`, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({username, password})
+    });
+
+    if (res.status !== 200) {
+        alert("Wrong ID Password");
+        return;
+    }
+
+    const data = await res.json();
+
+    token = data.access_token;
+
+    document.getElementById("loginBox").classList.add("hidden");
+    document.getElementById("app").classList.remove("hidden");
+
+    fetchAll();
+}
+
+/* ================= FETCH ================= */
+function fetchAll() {
+    fetchOrders();
+    fetchDashboard();
+}
+
+/* ================= DASHBOARD ================= */
+async function fetchDashboard() {
+    const res = await fetch(`${API}/dashboard`, {
+        headers: { Authorization: "Bearer " + token }
+    });
+
+    const data = await res.json();
+
+    document.getElementById("totalOrders").innerText = data.total_orders;
+    document.getElementById("totalRevenue").innerText = "₹" + data.total_revenue;
+
+    const active = data.orders_per_status.RECEIVED + data.orders_per_status.PROCESSING;
+    document.getElementById("activeOrders").innerText = active;
+}
+
+/* ================= ORDERS ================= */
+async function fetchOrders() {
+    const res = await fetch(`${API}/orders`, {
+        headers: { Authorization: "Bearer " + token }
+    });
+
+    const orders = await res.json();
+    const tbody = document.getElementById("ordersTable");
+    tbody.innerHTML = "";
+
+    orders.forEach(o => {
+
+        let color = "bg-yellow-100";
+        if (o.status === "PROCESSING") color = "bg-blue-100";
+        if (o.status === "READY") color = "bg-green-100";
+        if (o.status === "DELIVERED") color = "bg-gray-200";
+
+        tbody.innerHTML += `
+        <tr>
+            <td>${o.id}</td>
+            <td>${o.customer_name}</td>
+            <td><span class="${color} px-2">${o.status}</span></td>
+            <td>₹${o.total_bill}</td>
+            <td>
+                <button onclick="nextStatus('${o.id}')">Next</button>
+                <button onclick="deleteOrder('${o.id}')">Delete</button>
+            </td>
+        </tr>`;
+    });
+}
+
+/* ================= CREATE ================= */
+async function createOrder() {
+
+    const data = {
+        customer_name: document.getElementById("custName").value,
+        phone_number: document.getElementById("custPhone").value,
+        garments: [{
+            name: document.getElementById("garment").value,
+            quantity: parseInt(document.getElementById("qty").value),
+            price_per_item: parseFloat(document.getElementById("price").value)
+        }]
+    };
+
+    await fetch(`${API}/orders`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + token
+        },
+        body: JSON.stringify(data)
+    });
+
+    fetchAll();
+}
+
+/* ================= STATUS ================= */
+async function nextStatus(id) {
+    await fetch(`${API}/orders/${id}/status`, {
+        method: "PATCH",
+        headers: { Authorization: "Bearer " + token }
+    });
+
+    fetchAll();
+}
+
+/* ================= DELETE ================= */
+async function deleteOrder(id) {
+    await fetch(`${API}/orders/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: "Bearer " + token }
+    });
+
+    fetchAll();
+}
+</script>
+
+</body>
+</html>
