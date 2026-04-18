@@ -199,23 +199,23 @@ Laundry_System/
 ├── screenshots/
 ```
 
-📈 Future Improvements
+##📈 Future Improvements
 Secure password hashing
 PostgreSQL / MongoDB
 Mobile responsive UI
 SMS/WhatsApp integration
 Cloud deployment
 
-💡 Key Learning
+##💡 Key Learning
 
 AI is powerful, but not always correct.
 
--✔ Used Gemini for fast initial setup
--✔ Used ChatGPT for debugging and improvements
--✔ Fixed critical issues independently
--✔ Took final technical decisions myself
+✔ Used Gemini for fast initial setup
+✔ Used ChatGPT for debugging and improvements
+✔ Fixed critical issues independently
+✔ Took final technical decisions myself
 
-🙌 Final Note
+##🙌 Final Note
 
 This project demonstrates:
 
