@@ -1,4 +1,6 @@
 # 🧺 AI-First Laundry Order Management System
+### 📊 Dashboard
+![Dashboard](screenshots/dashboard1.png)
 
 ![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)
 ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
@@ -40,6 +42,13 @@ This system handles the complete lifecycle of an order:
   🟡 Received | 🔵 Processing | 🟢 Ready | ⚫ Delivered  
 
 ---
+## 📸 Screenshots
+
+### 🔐 Login Page
+![Login](screenshots/login.png)
+
+### 📊 Dashboard
+![Dashboard](screenshots/dashboard1.png)
 
 ## 🛠️ Tech Stack
 
@@ -186,7 +195,7 @@ Laundry_System/
 ├── laundry.db
 ├── templates/
 │ └── index.html
-├── ml_env/
+├── screenshots/
 
 📈 Future Improvements
 Secure password hashing
