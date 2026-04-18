@@ -189,14 +189,15 @@ Password: admin123
 
 ## 📁 Project Structure
 
+```
 Laundry_System/
 │
 ├── main.py
 ├── laundry.db
 ├── templates/
-│ └── index.html
+│   └── index.html
 ├── screenshots/
-
+```
 
 📈 Future Improvements
 Secure password hashing
