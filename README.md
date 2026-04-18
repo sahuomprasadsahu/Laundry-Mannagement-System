@@ -210,10 +210,10 @@ Cloud deployment
 
 AI is powerful, but not always correct.
 
-✔ Used Gemini for fast initial setup
-✔ Used ChatGPT for debugging and improvements
-✔ Fixed critical issues independently
-✔ Took final technical decisions myself
+-✔ Used Gemini for fast initial setup
+-✔ Used ChatGPT for debugging and improvements
+-✔ Fixed critical issues independently
+-✔ Took final technical decisions myself
 
 🙌 Final Note
 
